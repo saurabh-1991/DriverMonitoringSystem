@@ -35,7 +35,9 @@ from tf_explain.core.grad_cam import GradCAM
 from sklearn.model_selection import train_test_split
 from keras.utils.data_utils import get_file
 from tensorflow.python.client import device_lib
-
+#--------------------------------------------------------------------#
+from data_prepare import *
+#--------------------------------------------------------------------#
 
 # %matplotlib inline
 
@@ -52,6 +54,7 @@ def main():
         tf.config.experimental.set_memory_growth(physical_devices[0], True)
     else:
         print("Sorry, no GPU for you...")
+    load_data(path_list)
 
 
 if __name__ == "__main__":

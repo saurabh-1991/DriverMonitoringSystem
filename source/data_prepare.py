@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-path_list = ['/home/saurabh/Project/DMS/Dataset/Kaggle_Data/driver_imgs_list.csv'
+path_list = ['/home/saurabh/Project/DMS/Dataset/Kaggle_Data/driver_imgs_list.csv',
              '/home/saurabh/Project/DMS/Dataset/Kaggle_Data/imgs/train/']
 
 classes = {'c0': 'normal driving',
@@ -16,8 +16,10 @@ classes = {'c0': 'normal driving',
            'c9': 'talking to passenger', }
 
 
-def load_data(path_list):
-    print(path_list.type())
-    train_df = pd.read_csv(path_list[0])
-    train_df['path'] = path_list[1] + train_df['classname'] + '/' + \
+def load_data(path):
+    print(type(path))
+    train_df = pd.read_csv(path[0])
+    train_df['path'] = path[1] + train_df['classname'] + '/' + \
                        train_df['img']
+    print(train_df.head(5))
+    return train_df
