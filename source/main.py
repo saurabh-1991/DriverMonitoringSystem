@@ -54,7 +54,7 @@ def main():
         tf.config.experimental.set_memory_growth(physical_devices[0], True)
     else:
         print("Sorry, no GPU for you...")
-    load_data(path_list)
+    train_data = load_data(path_list)
 
 
 if __name__ == "__main__":
