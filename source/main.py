@@ -5,10 +5,8 @@ import sys
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
-import seaborn as sns
 import pickle
-import skimage
+
 from skimage.feature import hog, canny
 from skimage.filters import sobel
 from skimage import color
@@ -37,6 +35,7 @@ from keras.utils.data_utils import get_file
 from tensorflow.python.client import device_lib
 #--------------------------------------------------------------------#
 from data_prepare import *
+from visualization import visualize_train_data,visualize_class_distribution_analysis
 #--------------------------------------------------------------------#
 
 # %matplotlib inline
@@ -55,6 +54,12 @@ def main():
     else:
         print("Sorry, no GPU for you...")
     train_data = load_data(path_list)
+    add_resolution_data(train_data)
+    pred_df = load_gt_data(path_list)
+    check_missing_data(train_data)
+    visualize_train_data(train_data)
+    visualize_class_distribution_analysis(train_data)
+
 
 
 if __name__ == "__main__":
