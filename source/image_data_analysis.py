@@ -44,3 +44,19 @@ def visualize_edges_images_gray(class_name,train_data):
         plt.subplot(2,2,4)
         plt.imshow(edges[:dimension[0],:dimension[1],2], cmap='gray')
         plt.show()
+
+def visualize_corners_images_gray(class_name,train_data):
+    classes_df = train_data[train_data['classname'] ==  class_name].reset_index(drop = True)
+    for idx,i in enumerate(np.random.choice(classes_df['path'],4)):
+        image = cv2.imread(i)
+        gray=cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        corners_gray = cv2.goodFeaturesToTrack(gray, maxCorners=50, qualityLevel=0.02, minDistance=20)
+        corners_gray = np.float32(corners_gray)
+        for item in corners_gray:
+            x, y = item[0]
+            cv2.circle(image, (int(x), int(y)), 6, (0, 255, 0), -1)
+        fig = plt.figure(figsize=(16, 16))
+        plt.suptitle(classes[class_name])
+        plt.subplot(2,2,1)
+        plt.imshow(image, cmap="BuGn")
+        plt.show()

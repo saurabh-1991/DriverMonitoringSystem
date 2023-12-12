@@ -35,7 +35,8 @@ from tensorflow.python.client import device_lib
 #--------------------------------------------------------------------#
 from data_prepare import *
 from visualization import visualize_train_data,visualize_class_distribution_analysis
-from color_analysis import visualize_hsv_images,visualize_edges_images_gray
+from image_data_analysis import visualize_hsv_images,visualize_edges_images_gray,visualize_corners_images_gray
+from image_agumentations import plot_augimages,augment_training_data
 #--------------------------------------------------------------------#
 
 # %matplotlib inline
@@ -63,6 +64,7 @@ def main():
     for count,class_name in enumerate(train_data['classname'].unique()):
         if count == 0:
             visualize_hsv_images(class_name, train_data)
+            visualize_corners_images_gray(class_name,train_data)
         else:
             break
 
