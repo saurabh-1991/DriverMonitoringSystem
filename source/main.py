@@ -8,7 +8,6 @@ import tensorflow as tf
 import pickle
 
 from skimage.feature import hog, canny
-from skimage.filters import sobel
 from skimage import color
 
 from sklearn.preprocessing import LabelEncoder
@@ -36,6 +35,7 @@ from tensorflow.python.client import device_lib
 #--------------------------------------------------------------------#
 from data_prepare import *
 from visualization import visualize_train_data,visualize_class_distribution_analysis
+from color_analysis import visualize_hsv_images,visualize_edges_images_gray
 #--------------------------------------------------------------------#
 
 # %matplotlib inline
@@ -55,10 +55,16 @@ def main():
         print("Sorry, no GPU for you...")
     train_data = load_data(path_list)
     add_resolution_data(train_data)
+    #print(train_data.sort_values('width').head(84))
     pred_df = load_gt_data(path_list)
     check_missing_data(train_data)
-    visualize_train_data(train_data)
-    visualize_class_distribution_analysis(train_data)
+    #visualize_train_data(train_data)
+    #visualize_class_distribution_analysis(train_data)
+    for count,class_name in enumerate(train_data['classname'].unique()):
+        if count == 0:
+            visualize_hsv_images(class_name, train_data)
+        else:
+            break
 
 
 
