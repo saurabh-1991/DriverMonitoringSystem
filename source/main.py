@@ -19,14 +19,12 @@ from tensorflow.python.keras.models import Sequential, Model
 # from tensorflow.keras.preprocessing import image
 from keras_preprocessing import image
 from tensorflow.python.keras.layers import Input, Dense, Activation, Dropout
-from tensorflow.python.keras.layers import Flatten
+
 from tensorflow.python.keras.layers import *
 from keras.layers import Convolution2D, MaxPooling2D, AveragePooling2D, GlobalAveragePooling2D
 from keras.applications.imagenet_utils import preprocess_input
 #from tensorflow.python.keras.applications.vgg19 import VGG19
 #from tensorflow.python.keras.applications import ResNet50
-from keras.applications.vgg19 import VGG19
-from keras.applications import ResNet50
 from tf_explain.core.activations import ExtractActivations
 from tf_explain.core.grad_cam import GradCAM
 from sklearn.model_selection import train_test_split
@@ -60,13 +58,15 @@ def main():
     pred_df = load_gt_data(path_list)
     check_missing_data(train_data)
     #visualize_train_data(train_data)
-    #visualize_class_distribution_analysis(train_data)
-    for count,class_name in enumerate(train_data['classname'].unique()):
-        if count == 0:
-            visualize_hsv_images(class_name, train_data)
-            visualize_corners_images_gray(class_name,train_data)
-        else:
-            break
+    # visualize_class_distribution_analysis(train_data)
+    # for count,class_name in enumerate(train_data['classname'].unique()):
+    #     if count == 0:
+    #         visualize_hsv_images(class_name, train_data)
+    #         visualize_corners_images_gray(class_name,train_data)
+    #     else:
+    #         break
+    datagen = augment_training_data()
+    # plot_augimages(np.random.choice(train_data['path'],5),datagen)
 
 
 
