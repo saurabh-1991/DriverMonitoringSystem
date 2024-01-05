@@ -5,7 +5,9 @@ import pandas as pd
 from tqdm import tqdm
 from tensorflow.python.keras.utils import np_utils
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 import numpy as np
+import json
 
 NUMBER_CLASSES = 10
 
@@ -59,6 +61,7 @@ def load_train(img_rows, img_cols, color_type=3):
         files = glob(os.path.join(path['TrainingImages']+'c' + str(classed), '*.jpg'))
         for file in files:
             img = get_cv2_image(file, img_rows, img_cols, color_type)
+            #print("Image Shape:-",img.shape)
             train_images.append(img)
             train_labels.append(classed)
     return train_images, train_labels
@@ -118,3 +121,37 @@ def analyse_dataset(traindata,testdata):
     print('There are %d total training categories.' % categories_size)
     print('There are %d validation images.' % x_test_size)
     print('There are %d test images.' % test_files_size)
+
+def write_json(data, fname='./output.json'):
+    """Write data to json
+
+    @param data: object to be written
+
+    Keyword arguments:
+    fname  -- output filename (default './output.json')
+
+    """
+    with open(fname, 'w') as fp:
+        json.dump(data, fp)
+
+def plot_train_history(history):
+    """
+    Plot the validation accuracy and validation loss over epochs
+    """
+    # Summarize history for accuracy
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
+    plt.title('Model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+
+    # Summarize history for loss
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('Model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
