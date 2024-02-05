@@ -3,7 +3,8 @@ import os
 from glob import glob
 import pandas as pd
 from tqdm import tqdm
-from tensorflow.python.keras.utils import np_utils
+#from tensorflow.python.keras.utils import np_utils
+import tensorflow.keras.utils as np_utils
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,9 +12,9 @@ import json
 
 NUMBER_CLASSES = 10
 
-path = {"TrainingImages": "/home/saurabh/Project/DMS/Dataset/Kaggle_Data/imgs/train/",
-        "Labels": "/home/saurabh/Project/DMS/Dataset/Kaggle_Data/driver_imgs_list.csv",
-        "TestImages": "/home/saurabh/Project/DMS/Dataset/Kaggle_Data/imgs/test"}
+path = {"TrainingImages": "/home/saurabh/Project/DMS/KaggleData/imgs/train/",
+        "Labels": "/home/saurabh/Project/DMS/KaggleData/driver_imgs_list.csv",
+        "TestImages": "/home/saurabh/Project/DMS/KaggleData/imgs/imgs/test"}
 
 activity_map = {'c0': 'Safe driving',
                 'c1': 'Texting - right',

@@ -1,8 +1,5 @@
 import os
-from glob import glob
-import random
-import time
-import tensorflow
+import tensorflow as tf
 import datetime
 os.environ['KERAS_BACKEND'] = 'tensorflow'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # 3 = INFO, WARNING, and ERROR
@@ -10,35 +7,33 @@ from tqdm import tqdm
 import numpy as np
 import pandas as pd
 from IPython.display import FileLink
-
+import sys
+#from keras.models import load_model        #----SK - Loads only hd5 model
+from tensorflow.keras.models import load_model      #----SK - Loads only h5 model
 import warnings
 warnings.filterwarnings('ignore')
-import seaborn as sns
-from IPython.display import display, Image
-import matplotlib.image as mpimg
-
-
-from sklearn.datasets import load_files
-#from keras.utils import np_utils
-from keras import utils
-from sklearn.utils import shuffle
-from sklearn.metrics import log_loss
-
-from tensorflow import keras
-
-from keras.models import Sequential, Model
-from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization, GlobalAveragePooling2D
-
-from tensorflow.keras.preprocessing import image
-from keras.callbacks import ModelCheckpoint, EarlyStopping
-from keras.applications.vgg16 import VGG16
-
 from data_analysis import *
 from model import *
 from data_augmentation import *
+from Inferance import *
 
-def main():
+
+def get_available_gpus():
+    gpus = tf.config.list_physical_devices('GPU')
+    print(gpus)
+    if gpus:
+        try:
+            # Currently, memory growth needs to be the same across GPUs
+            for gpu in gpus:
+                tf.config.experimental.set_memory_growth(gpu, True)
+            logical_gpus = tf.config.list_logical_devices('GPU')
+            print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+        except RuntimeError as e:
+            # Memory growth must be set before GPUs have been initialized
+            print(e)
+def train():
     print("******DMS V0.1******")
+    get_available_gpus()
     dataset = load_data()
     img_rows = 64#64  # dimension of images
     img_cols = 64#64
@@ -138,7 +133,7 @@ def main():
         # Compiling the model
         SqueezeNet_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
         print(SqueezeNet_model.inputs)
-        checkpointer3 = ModelCheckpoint(filepath=models_dir + '/dms_Squeezenet_v0.1_with_Augmentation.h5',
+        checkpointer3 = ModelCheckpoint(filepath=models_dir + '/dms_Squeezenet_v1.1_with_Augmentation_weights.h5',
                                         monitor='val_loss', mode='min',
                                         save_weights_only=True,
                                         verbose=1, save_best_only=True)
@@ -150,7 +145,8 @@ def main():
                                          callbacks=[checkpointer3],
                                          validation_steps=nb_validation_samples // batch_size)
 
-    SqueezeNet_model.save_weights('../data/dms_v0.1_squeezenet.keras', overwrite=True)
+    #SqueezeNet_model.save_weights('../data/dms_v0.1_squeezenet_weights.hd5', overwrite=True)
+    SqueezeNet_model.save('../data/dms_v1.1_squeezenet.h5',overwrite=True,save_format='tf')
     model_parms = {'nb_class': NUMBER_CLASSES,
                    'nb_train_samples': nb_train_samples,
                    'nb_val_samples': nb_validation_samples,
@@ -161,9 +157,41 @@ def main():
     write_json(model_parms, fname='../data/SqueezeNet_parms.json')
     plot_train_history(history_SqueezNet)
 
-
+#infer /home/saurabh/Project/DMS/DriverMonitoringSystem/data/dms_Squeezenet_v0.1_with_Augmentation.h5 /home/saurabh/Project/DMS/KaggleData/imgs/img_1.jpg
 
 if __name__ == '__main__':
-    main()
+    print(f'\nTensorflow version = {tf.__version__}\n')
+    print(f'\n{tf.config.list_physical_devices("GPU")}\n')
+    print("\n*******************DMS Application v1.1***************************\n")
+    # if len(sys.argv) != 4:
+    #     print("\n[ERROR] Missing Arguments :-hint:(Usage: python main.py <train or infer>)\n")
+    #     sys.exit(1)
+    option = sys.argv[1].lower()
+    if option == "train":
+        train()
+    elif option == "infer":
+        if len(sys.argv) != 4:
+            print("[ERROR] Missing Arguments :-hint:(Usage: python main.py infer <model_path> <image_path>)")
+            sys.exit(1)
+        model_path = sys.argv[2]
+        image_path = sys.argv[3]
+        if not os.path.exists(model_path):
+            print(f"Error: Model file '{model_path}' not found.")
+            sys.exit(1)
+        print(f"\n[Infer]: Model Path Selected {model_path}")
+        print(f"\n[Infer]: Image Path Selected {image_path}")
+        # Load the pre-trained SqueezeNet model
+        try:
+            # Load the pre-trained SqueezeNet model
+            model = load_model(model_path)
+        except Exception as e:
+            print(f"Error loading the model: {e}")
+            sys.exit(1)
+        #model = load_model(model_path)
+        predicted_class, confidence = predict_image_class(model, image_path, labels)
+        print(f"\nPredicted class: {predicted_class} --> {activity_map[predicted_class]}")
+        print(f"\nConfidence: {confidence}")
+
+    #print("Invalid option. Use 'train' or 'infer'.")
 
 #https://www.kaggle.com/code/pierrelouisdanieau/computer-vision-tips-to-increase-accuracy
