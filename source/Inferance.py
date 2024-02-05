@@ -1,9 +1,10 @@
 import numpy as np
+import tensorflow as tf
 from keras.preprocessing import image
 from keras.applications.imagenet_utils import preprocess_input
 
-
 labels = ['c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
+
 def load_and_preprocess_image(image_path):
     img = image.load_img(image_path, target_size=(224,224))
     img_array = image.img_to_array(img)

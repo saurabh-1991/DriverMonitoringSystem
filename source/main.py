@@ -16,7 +16,7 @@ from data_analysis import *
 from model import *
 from data_augmentation import *
 from Inferance import *
-
+from visualize import *
 
 def get_available_gpus():
     gpus = tf.config.list_physical_devices('GPU')
@@ -77,7 +77,7 @@ def train():
     # print('Loss: ', score1[0])
     # print('Accuracy: ', score1[1] * 100, ' %')
 
-    # With Data Augumentation
+    # With Data Augmentation
 
     train_datagen,test_datagen = augment_training_data()
     # nb_train_samples = x_train.shape[0]
@@ -111,7 +111,7 @@ def train():
     # Squeezenet Model
 
     #----------------------------------------------------------------------------------------------------------------
-    print("##########-SqueezeDet Training-############")
+    print("##########-SqueezeNet Training-############")
     # Create a tf.distribute.Strategy object
     strategy = tensorflow.distribute.MirroredStrategy()
     GLOBAL_BATCH_SIZE = strategy.num_replicas_in_sync * batch_size
@@ -146,6 +146,7 @@ def train():
                                          validation_steps=nb_validation_samples // batch_size)
 
     #SqueezeNet_model.save_weights('../data/dms_v0.1_squeezenet_weights.hd5', overwrite=True)
+    tensorflow.keras.models.save_model(SqueezeNet_model,'../data/dms_v0.1_squeezenet_weights.hd5/SqueezeNet.keras')
     SqueezeNet_model.save('../data/dms_v1.1_squeezenet.h5',overwrite=True,save_format='tf')
     model_parms = {'nb_class': NUMBER_CLASSES,
                    'nb_train_samples': nb_train_samples,
@@ -166,18 +167,24 @@ if __name__ == '__main__':
     # if len(sys.argv) != 4:
     #     print("\n[ERROR] Missing Arguments :-hint:(Usage: python main.py <train or infer>)\n")
     #     sys.exit(1)
-    option = sys.argv[1].lower()
+    # option = sys.argv[0].lower()
+    option = input("Option: ").lower()
     if option == "train":
         train()
     elif option == "infer":
-        if len(sys.argv) != 4:
+        if len(option) != 5:
             print("[ERROR] Missing Arguments :-hint:(Usage: python main.py infer <model_path> <image_path>)")
             sys.exit(1)
-        model_path = sys.argv[2]
-        image_path = sys.argv[3]
+        # model_path = sys.argv[2]
+        # image_path = sys.argv[3]
+        model_path = 'C:/Users/shralatt/Desktop/Project/VGG19_project/Models/Saved.keras'
+        # model_path = 'C:/Users/shralatt/Downloads/dms_Squeezenet_v0.1_with_Augmentation.h5'
+        # model_path = 'C:/Users/shralatt/PycharmProjects/DriverMonitoringSystem/data/SqueezeNet.keras'
+        image_path = 'C:/Users/shralatt/Desktop/Project/VGG19_project/Dataset/imgs/test/img_2.jpg'
         if not os.path.exists(model_path):
             print(f"Error: Model file '{model_path}' not found.")
             sys.exit(1)
+
         print(f"\n[Infer]: Model Path Selected {model_path}")
         print(f"\n[Infer]: Image Path Selected {image_path}")
         # Load the pre-trained SqueezeNet model
@@ -191,7 +198,10 @@ if __name__ == '__main__':
         predicted_class, confidence = predict_image_class(model, image_path, labels)
         print(f"\nPredicted class: {predicted_class} --> {activity_map[predicted_class]}")
         print(f"\nConfidence: {confidence}")
+        image = read_img(image_path)
+        overlay_text(image,activity_map[predicted_class])
+        show_img(image)
 
-    #print("Invalid option. Use 'train' or 'infer'.")
+    # print("Invalid option. Use 'train' or 'infer'.")
 
-#https://www.kaggle.com/code/pierrelouisdanieau/computer-vision-tips-to-increase-accuracy
+ # https://www.kaggle.com/code/pierrelouisdanieau/computer-vision-tips-to-increase-accuracy
