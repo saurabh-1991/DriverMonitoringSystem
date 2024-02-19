@@ -22,7 +22,9 @@ Based upon different scenarios 10 Different classes are considered.
 | C8      | Hair and makeup |
 | C9      | Talking to passenger |
 
-### Class Distribution
+## Result
+![gifmaker_me (1)](https://github.com/saurabh-1991/DriverMonitoringSystem/assets/103377636/c920eaf0-7d58-451a-8fdc-b23c820d53ad)
+
 
 
 --------------------------------------------------------------------------------------------------------------------
