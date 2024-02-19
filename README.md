@@ -8,9 +8,9 @@ Dataset used to train this custom CNN model is with referance to Kaggle Input Da
 Based upon different scenarios 10 Different classes are considered.
 ![image](https://github.com/saurabh-1991/DriverMonitoringSystem/assets/53288493/f6269390-02c7-436f-b606-60da2a856942)
 
-| Class       | Labels          |  
+| Class   | Labels      |  
  
-| ------------- |:-------------:|                 
+| ------- | ----------- |                 
 | C0      | Safe driving |
 | C1      | Texting - right |
 | C2      | Talking on the phone - right |
@@ -21,6 +21,12 @@ Based upon different scenarios 10 Different classes are considered.
 | C7      | Reaching behind |
 | C8      | Hair and makeup |
 | C9      | Talking to passenger |
+
+## Models
+This project incompasses 3 CNN architectures to build respective models. Following are the architechtures used:
+1) VGG19
+2) SqueezeNet
+3) Custom CNN Model
 
 ## Result
 ![gifmaker_me (1)](https://github.com/saurabh-1991/DriverMonitoringSystem/assets/103377636/c920eaf0-7d58-451a-8fdc-b23c820d53ad)
