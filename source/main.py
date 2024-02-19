@@ -145,9 +145,7 @@ def train():
                                          callbacks=[checkpointer3],
                                          validation_steps=nb_validation_samples // batch_size)
 
-    #SqueezeNet_model.save_weights('../data/dms_v0.1_squeezenet_weights.hd5', overwrite=True)
-    tensorflow.keras.models.save_model(SqueezeNet_model,'../data/dms_v0.1_squeezenet_weights.hd5/SqueezeNet.keras')
-    SqueezeNet_model.save('../data/dms_v1.1_squeezenet.h5',overwrite=True,save_format='tf')
+    tensorflow.keras.models.save_model(SqueezeNet_model,"C:/Users/shralatt/PycharmProjects/DriverMonitoringSystem/data/SqueezeNet_again.keras", overwrite=True)
     model_parms = {'nb_class': NUMBER_CLASSES,
                    'nb_train_samples': nb_train_samples,
                    'nb_val_samples': nb_validation_samples,
@@ -175,33 +173,38 @@ if __name__ == '__main__':
         if len(option) != 5:
             print("[ERROR] Missing Arguments :-hint:(Usage: python main.py infer <model_path> <image_path>)")
             sys.exit(1)
-        # model_path = sys.argv[2]
-        # image_path = sys.argv[3]
-        model_path = 'C:/Users/shralatt/Desktop/Project/VGG19_project/Models/Saved.keras'
-        # model_path = 'C:/Users/shralatt/Downloads/dms_Squeezenet_v0.1_with_Augmentation.h5'
-        # model_path = 'C:/Users/shralatt/PycharmProjects/DriverMonitoringSystem/data/SqueezeNet.keras'
-        image_path = 'C:/Users/shralatt/Desktop/Project/VGG19_project/Dataset/imgs/test/img_2.jpg'
+
+        #model_path = 'C:/Users/shralatt/Desktop/Project/VGG19_project/Models/Saved_15e_60s.keras'
+        model_path = 'C:/Users/shralatt/PycharmProjects/DriverMonitoringSystem/data/SqueezeNet_12_changed.keras'
+        #model_path = 'C:/Users/shralatt/PycharmProjects/DriverMonitoringSystem/data/dms_custom_model_wda.keras'
+        image_path = 'C:/Users/shralatt/Desktop/Project/VGG19_project/Dataset/imgs/test/'
         if not os.path.exists(model_path):
             print(f"Error: Model file '{model_path}' not found.")
             sys.exit(1)
 
+        list_a = load_img(image_path)
         print(f"\n[Infer]: Model Path Selected {model_path}")
-        print(f"\n[Infer]: Image Path Selected {image_path}")
-        # Load the pre-trained SqueezeNet model
         try:
             # Load the pre-trained SqueezeNet model
             model = load_model(model_path)
         except Exception as e:
             print(f"Error loading the model: {e}")
             sys.exit(1)
-        #model = load_model(model_path)
-        predicted_class, confidence = predict_image_class(model, image_path, labels)
-        print(f"\nPredicted class: {predicted_class} --> {activity_map[predicted_class]}")
-        print(f"\nConfidence: {confidence}")
-        image = read_img(image_path)
-        overlay_text(image,activity_map[predicted_class])
-        show_img(image)
 
-    # print("Invalid option. Use 'train' or 'infer'.")
+
+        for i in list_a:
+            print(f"\n[Infer]: Image Path Selected {image_path}" + i)
+            tell = input("Press 'y' for next prediction or 'n' to terminate: ")
+            test = image_path + i
+            if tell == 'y':
+                predicted_class, confidence = predict_image_class(model, test, labels)
+                print(f"\nPredicted class: {predicted_class} --> {activity_map[predicted_class]}")
+                print(f"\nConfidence: {confidence}")
+                image = read_img(test)
+                overlay_text(image, activity_map[predicted_class])
+                show_img(image)
+
+            elif tell == 'n':
+                break
 
  # https://www.kaggle.com/code/pierrelouisdanieau/computer-vision-tips-to-increase-accuracy
